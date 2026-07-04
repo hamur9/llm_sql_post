@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: llm_sql_api
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    # Делаем так, чтобы host.docker.internal работал даже на Linux-машинах!
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      # Прокидываем ВЕСЬ код в контейнер для горячей перезагрузки
+      - .:/app
+      # Синхронизируем папку output
+      - ./output:/app/output
+      # Прокидываем базу данных
+      - ./sales.db:/app/sales.db
+    # Переопределяем команду запуска для режима разработки (добавляем --reload)
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
