@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  corporate-agent:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./output:/app/output
+    environment:
+      - DB_PATH=./data/sales.db
+      - OUTPUT_DIR=./output
+      - BASE_URL=http://127.0.0.1:8000/output/
+    extra_hosts:                                   # Добавь эту строку
+      - "host.docker.internal:host-gateway"        # И эту строку
